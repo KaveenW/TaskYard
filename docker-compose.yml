@@ -1,0 +1,26 @@
+
+services:
+  postgres:
+    image: postgres:17
+    container_name: taskyard-postgres
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_DB: taskyard
+      POSTGRES_USER: taskyard_user
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+
+    ports:
+      - "5433:5432"
+
+    volumes:
+      - taskyard_postgres_data:/var/lib/postgresql/data
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U taskyard_user -d taskyard"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  taskyard_postgres_data:
